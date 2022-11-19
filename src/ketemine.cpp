@@ -7,7 +7,11 @@
 GLFWwindow* ktp::keteMine::window {nullptr};
 ktp::Size2D ktp::keteMine::window_size {1920, 1080};
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+  glViewport(0, 0, width, height);
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GL_TRUE);
 }
@@ -32,7 +36,10 @@ bool ktp::keteMine::init() {
     return false;
   }
 
-  glfwSetKeyCallback(window, key_callback);
+  glViewport(0, 0, window_size.x, window_size.y);
+
+  glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+  glfwSetKeyCallback(window, keyCallback);
 
   return true;
 }
