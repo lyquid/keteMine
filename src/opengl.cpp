@@ -1,5 +1,6 @@
 #include "opengl.hpp"
 
+#include <glm/common.hpp>
 #include <iostream>
 #include <string>
 

@@ -46,9 +46,10 @@ void ktp::keteMine::init() {
     std::cerr << "Error: " << glewGetErrorString(err) << '\n';
     exit(EXIT_FAILURE);
   }
-  std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << '\n';
 
   glViewport(0, 0, window_size.x, window_size.y);
+
+  versionInfo();
 
   gui::init(window);
 }
@@ -64,4 +65,11 @@ void ktp::keteMine::run() {
   }
   glfwDestroyWindow(window);
   glfwTerminate();
+}
+
+void ktp::keteMine::versionInfo() {
+  std::cout << glGetString(GL_RENDERER) << '\n';
+  std::cout << "OpenGL " << glGetString(GL_VERSION) << '\n';
+  std::cout << "GLEW " << glewGetString(GLEW_VERSION) << '\n';
+  std::cout << "GLFW " << glfwGetVersionString() << '\n';
 }

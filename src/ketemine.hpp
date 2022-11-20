@@ -18,6 +18,7 @@ namespace ktp { namespace keteMine {
 
 void init();
 void run();
+void versionInfo();
 
 extern GLFWwindow* window;
 extern Size2D window_size;

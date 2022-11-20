@@ -13,7 +13,7 @@
 #define KETEMINE_SRC_TYPES_HPP_
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
+#include <glm/vec2.hpp>
 #include <vector>
 
 // GLWF
@@ -29,8 +29,8 @@ namespace ktp {
 
   using Size2D  = glm::vec<2, GLint>;
   using Size2Du = glm::vec<2, GLuint>;
-  using Point3d = glm::fvec3;
-  using Vector3 = Point3d;
+  using Point3D = glm::vec<3, GLfloat>;
+  using Vector3 = Point3D;
   using FloatArray = std::vector<GLfloat>;
   using UintArray  = std::vector<GLuint>;
 

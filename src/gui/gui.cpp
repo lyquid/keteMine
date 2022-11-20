@@ -15,6 +15,7 @@ void ktp::gui::init(GLFWwindow* window) {
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init("#version 430");
+  printf("Dear ImGui %s\n", ImGui::GetVersion());
 }
 
 void ktp::gui::layout() {
