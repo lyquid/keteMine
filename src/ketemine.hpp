@@ -16,6 +16,7 @@
 
 namespace ktp { namespace keteMine {
 
+void contextInfo();
 void init();
 void run();
 void versionInfo();
