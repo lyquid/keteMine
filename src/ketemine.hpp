@@ -16,7 +16,7 @@
 
 namespace ktp { namespace keteMine {
 
-bool init();
+void init();
 void run();
 
 extern GLFWwindow* window;

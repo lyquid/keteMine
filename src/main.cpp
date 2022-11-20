@@ -4,8 +4,7 @@ using namespace ktp;
 
 int main(void) {
 
-  if (!keteMine::init()) return 1;
-
+  keteMine::init();
   keteMine::run();
 
   return 0;
