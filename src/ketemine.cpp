@@ -1,5 +1,6 @@
 #include "ketemine.hpp"
 
+#include "gui/gui.hpp"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -19,8 +20,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 bool ktp::keteMine::init() {
   glfwInit();
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   window = glfwCreateWindow(window_size.x, window_size.y, "keteMine", nullptr, nullptr);
@@ -41,6 +42,8 @@ bool ktp::keteMine::init() {
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
   glfwSetKeyCallback(window, keyCallback);
 
+  gui::init(window);
+
   return true;
 }
 
@@ -48,6 +51,9 @@ void ktp::keteMine::run() {
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT);
+
+    gui::layout();
+
     glfwSwapBuffers(window);
   }
   glfwTerminate();

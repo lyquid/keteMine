@@ -30,6 +30,7 @@ if(DEFINED CMAKE_TOOLCHAIN_FILE)
     GLEW::GLEW
     glfw
     glm::glm
+    keteMineGUI
   )
 else()
   # DO YOUR OWN

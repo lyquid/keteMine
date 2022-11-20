@@ -22,6 +22,6 @@ void run();
 extern GLFWwindow* window;
 extern Size2D window_size;
 
-} } // namespace keTemine / ktp
+} } // namespace keteMine / ktp
 
 #endif // KETEMINE_SRC_KETEMINE_HPP_
