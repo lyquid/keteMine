@@ -50,9 +50,9 @@ else()
 	# like: find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 endif()
 
-add_subdirectory(lib/imgui)
 add_subdirectory(src)
 add_subdirectory(src/gui)
+add_subdirectory(src/lib/imgui)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
