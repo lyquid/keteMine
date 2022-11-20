@@ -1,6 +1,7 @@
 add_executable(keteMine
   ketemine.cpp
   main.cpp
+  opengl.cpp
 )
 target_compile_features(keteMine PUBLIC cxx_std_20)
 set_target_properties(keteMine PROPERTIES CXX_EXTENSIONS OFF)
