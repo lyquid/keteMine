@@ -9,7 +9,7 @@ GLFWwindow* ktp::keteMine::window {nullptr};
 ktp::Size2D ktp::keteMine::window_size {1920, 1080};
 
 void errorCallback(int error, const char* description) {
-  std::cout << "Error: " << description << '\n';
+  std::cout << "GLFW error " << error << ": " << description << '\n';
 }
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -23,10 +23,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 void ktp::keteMine::init() {
   // GLFW
+  glfwSetErrorCallback(errorCallback);
   if (!glfwInit()) exit(EXIT_FAILURE);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
   // window
   window = glfwCreateWindow(window_size.x, window_size.y, "keteMine", nullptr, nullptr);
   if (!window) {
@@ -36,14 +39,13 @@ void ktp::keteMine::init() {
   glfwMakeContextCurrent(window);
   glClearColor(0.f, 0.f, 0.f, 1.f);
   // callbacks
-  glfwSetErrorCallback(errorCallback);
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
   glfwSetKeyCallback(window, keyCallback);
   // GLEW
   glewExperimental = GL_TRUE;
   const auto err {glewInit()};
   if (GLEW_OK != err) {
-    std::cerr << "Error: " << glewGetErrorString(err) << '\n';
+    std::cerr << "GLEW error: " << glewGetErrorString(err) << '\n';
     exit(EXIT_FAILURE);
   }
 
