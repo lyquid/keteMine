@@ -44,13 +44,13 @@ if(DEFINED CMAKE_TOOLCHAIN_FILE)
   find_package(GLEW REQUIRED)
   find_package(glfw3 CONFIG REQUIRED)
   find_package(glm CONFIG REQUIRED)
-  find_package(imgui CONFIG REQUIRED)
 else()
 	message(STATUS "Using CMake find modules")
   # Find the packages needed
 	# like: find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 endif()
 
+add_subdirectory(lib/imgui)
 add_subdirectory(src)
 add_subdirectory(src/gui)
 

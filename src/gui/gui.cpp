@@ -1,8 +1,9 @@
 #include "gui.hpp"
 
-#include <imgui.h>
-#include "imgui_backend/imgui_impl_glfw.h"
-#include "imgui_backend/imgui_impl_opengl3.h"
+#include "../../lib/imgui/imgui.h"
+#include "../../lib/imgui/imgui_impl_glfw.h"
+#include "../../lib/imgui/imgui_impl_opengl3.h"
+#include <iostream>
 
 void ktp::gui::init(GLFWwindow* window) {
   // Setup Dear ImGui context
@@ -15,7 +16,7 @@ void ktp::gui::init(GLFWwindow* window) {
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init("#version 430");
-  printf("Dear ImGui %s\n", ImGui::GetVersion());
+  std::cout << "Dear ImGui " << ImGui::GetVersion() << '\n';
 }
 
 void ktp::gui::layout() {

@@ -8,7 +8,7 @@
 GLFWwindow* ktp::keteMine::window {nullptr};
 ktp::Size2D ktp::keteMine::window_size {1920, 1080};
 
-void errorCallback(int error, const char* description) {
+void glfwErrorCallback(int error, const char* description) {
   std::cout << "GLFW error " << error << ": " << description << '\n';
 }
 
@@ -74,7 +74,7 @@ void ktp::keteMine::contextInfo() {
 
 void ktp::keteMine::init() {
   // GLFW
-  glfwSetErrorCallback(errorCallback);
+  glfwSetErrorCallback(glfwErrorCallback);
   if (!glfwInit()) exit(EXIT_FAILURE);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
