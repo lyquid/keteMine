@@ -10,6 +10,24 @@
 GLFWwindow* ktp::keteMine::window {nullptr};
 ktp::Size2D ktp::keteMine::window_size {1920, 1080};
 
+void updateFps(GLFWwindow* window) {
+  static double previous_seconds {glfwGetTime()};
+  static int frame_count {};
+  double current_seconds {glfwGetTime()};
+  double elapsed_seconds {current_seconds - previous_seconds};
+  if (elapsed_seconds > 0.25) {
+    previous_seconds = current_seconds;
+    double fps {(double)frame_count / elapsed_seconds};
+    char tmp[128];
+    sprintf(tmp, "keteMine @ fps: %.2f", fps);
+    glfwSetWindowTitle(window, tmp);
+    frame_count = 0;
+  }
+  ++frame_count;
+}
+
+// CALLBACKS
+
 void glfwErrorCallback(int error, const char* description) {
   std::cout << "GLFW error " << error << ": " << description << '\n';
 }
@@ -136,6 +154,8 @@ void ktp::keteMine::run() {
   ShaderProgram shader {Resources::getShader("basic")};;
 
   while (!glfwWindowShouldClose(window)) {
+    updateFps(window);
+
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, window_size.x, window_size.y);
 
