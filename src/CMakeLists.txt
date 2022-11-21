@@ -34,7 +34,12 @@ if(DEFINED CMAKE_TOOLCHAIN_FILE)
     keteMineGUI
   )
 else()
-  # DO YOUR OWN
+  target_link_libraries(keteMine PRIVATE
+    GLEW::GLEW
+    glfw
+    glm
+    keteMineGUI
+  )
 endif()
 
 install(TARGETS keteMine RUNTIME DESTINATION ${BIN_DIR})

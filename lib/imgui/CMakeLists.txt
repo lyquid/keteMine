@@ -13,13 +13,7 @@ if(DEFINED CMAKE_TOOLCHAIN_FILE)
     GLEW::GLEW
   )
 else()
-  # target_include_directories(keTerrainGUI PRIVATE ${keTerrain_SOURCE_DIR}/lib/imgui-1.88)
-  # target_include_directories(keTerrainGUI PRIVATE ${keTerrain_SOURCE_DIR}/lib/imgui-sfml)
-  # target_link_libraries(keTerrainGUI PRIVATE
-  #   imgui
-  #   ImGui-SFML
-  #   sfml-system
-  #   sfml-graphics
-  #   sfml-window
-  # )
+  target_link_libraries(imgui PRIVATE
+    glfw
+  )
 endif()
