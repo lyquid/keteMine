@@ -14,6 +14,8 @@
 
 #include <GL/glew.h>
 #include <glm/vec2.hpp>
+#include <map>
+#include <string>
 #include <vector>
 
 // GLWF
@@ -33,6 +35,7 @@ namespace ktp {
   using Vector3 = Point3D;
   using FloatArray = std::vector<GLfloat>;
   using UintArray  = std::vector<GLuint>;
+  using ShadersMap = std::map<std::string, GLuint>;
 
 } // namespace ktp
 

@@ -1,5 +1,7 @@
 #include "ketemine.hpp"
 
+#include "opengl.hpp"
+#include "resources.hpp"
 #include "gui/gui.hpp"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -113,9 +115,33 @@ void ktp::keteMine::init() {
 }
 
 void ktp::keteMine::run() {
+  FloatArray points {
+     0.0f,  0.5f,  0.0f,
+     0.5f, -0.5f,  0.0f,
+    -0.5f, -0.5f,  0.0f
+  };
+
+  VBO vbo {};
+  vbo.setup(points, GL_STATIC_DRAW);
+
+  VAO vao {};
+  vao.linkAttrib(vbo, 0, 3, GL_FLOAT, 0, nullptr);
+
+  Resources::loadShader(
+    "basic",
+    "resources/shaders/basic.vert",
+    "resources/shaders/basic.frag"
+  );
+
+  ShaderProgram shader {Resources::getShader("basic")};;
+
   while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, window_size.x, window_size.y);
+
+    shader.use();
+    vao.bind();
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     gui::layout();
 

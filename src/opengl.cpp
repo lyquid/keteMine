@@ -4,8 +4,6 @@
 #include <iostream>
 #include <string>
 
-/* SDL2_GL */
-
 GLenum ktp::glCheckError_(const char* file, int line) {
   GLenum error_code {};
   while ((error_code = glGetError())) {
@@ -161,20 +159,3 @@ void ktp::VAO::linkAttribFast(GLuint layout, GLuint components, GLenum type, GLs
     offset        // pointer: specifies a offset of the first component of the first generic vertex attribute in the array in the data store
   );
 }
-
-/* Texture2D */
-
-// void ktp::Texture2D::generate(GLsizei width, GLsizei height, unsigned char* data) {
-//   width_ = width;
-//   height_ = height;
-//   // create Texture
-//   glBindTexture(GL_TEXTURE_2D, m_id);
-//   glTexImage2D(GL_TEXTURE_2D, 0, internal_format_, width, height, 0, image_format_, GL_UNSIGNED_BYTE, data);
-//   // set Texture wrap and filter modes
-//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s_);
-//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t_);
-//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_min_);
-//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_max_);
-//   // unbind texture
-//   glBindTexture(GL_TEXTURE_2D, 0);
-// }
