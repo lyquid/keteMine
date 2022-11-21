@@ -138,12 +138,20 @@ void ktp::keteMine::run() {
      0.5f, -0.5f,  0.0f,
     -0.5f, -0.5f,  0.0f
   };
+  VBO vbo_points {};
+  vbo_points.setup(points, GL_STATIC_DRAW);
 
-  VBO vbo {};
-  vbo.setup(points, GL_STATIC_DRAW);
+  FloatArray colors {
+    1.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 1.0f
+  };
+  VBO vbo_colors {};
+  vbo_colors.setup(colors, GL_STATIC_DRAW);
 
   VAO vao {};
-  vao.linkAttrib(vbo, 0, 3, GL_FLOAT, 0, nullptr);
+  vao.linkAttrib(vbo_points, 0, 3, GL_FLOAT, 0, nullptr);
+  vao.linkAttrib(vbo_colors, 1, 3, GL_FLOAT, 0, nullptr);
 
   Resources::loadShader(
     "basic",
