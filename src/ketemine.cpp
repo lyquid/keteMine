@@ -163,6 +163,7 @@ void ktp::keteMine::run() {
 
   while (!glfwWindowShouldClose(window)) {
     updateFps(window);
+    glfwPollEvents();
 
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, window_size.x, window_size.y);
@@ -174,8 +175,8 @@ void ktp::keteMine::run() {
     gui::layout();
 
     glfwSwapBuffers(window);
-    glfwPollEvents();
   }
+  gui::clean();
   glfwDestroyWindow(window);
   glfwTerminate();
 }

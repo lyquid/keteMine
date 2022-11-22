@@ -16,6 +16,7 @@
 
 namespace ktp { namespace gui {
 
+void clean();
 void init(GLFWwindow* window);
 void layout();
 

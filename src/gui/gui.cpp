@@ -5,6 +5,12 @@
 #include "../../lib/imgui/imgui_impl_opengl3.h"
 #include <iostream>
 
+void ktp::gui::clean() {
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+}
+
 void ktp::gui::init(GLFWwindow* window) {
   // Setup Dear ImGui context
   IMGUI_CHECKVERSION();
@@ -26,6 +32,11 @@ void ktp::gui::layout() {
   ImGui::NewFrame();
 
   ImGui::ShowDemoWindow();
+
+
+
+
+
 
   ImGui::Render();
 
