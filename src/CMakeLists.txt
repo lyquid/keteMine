@@ -43,3 +43,9 @@ else()
 endif()
 
 install(TARGETS keteMine RUNTIME DESTINATION ${BIN_DIR})
+
+add_custom_command(TARGET keteMine POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/resources/
+    $<TARGET_FILE_DIR:keteMine>/resources
+)

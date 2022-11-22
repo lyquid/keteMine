@@ -40,7 +40,6 @@ if(DEFINED CMAKE_TOOLCHAIN_FILE)
 	message(STATUS "Using vcpkg toolchain file")
   # For Windows: Prevent overriding the parent project's compiler/linker settings
   set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-  # Find the packages needed
   find_package(GLEW REQUIRED)
   find_package(glfw3 CONFIG REQUIRED)
   find_package(glm CONFIG REQUIRED)
@@ -59,4 +58,4 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
-file(COPY ./resources/ DESTINATION ./src/resources)
+# file(COPY ./resources/ DESTINATION ./src/resources)
