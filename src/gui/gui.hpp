@@ -17,8 +17,12 @@
 namespace ktp { namespace gui {
 
 void clean();
+void draw();
 void init(GLFWwindow* window);
-void layout();
+
+void mainWindow();
+void shaders();
+void textures();
 
 } } // namespace gui/ktp
 

@@ -35,7 +35,11 @@ namespace ktp {
   using Vector3 = Point3D;
   using FloatArray = std::vector<GLfloat>;
   using UintArray  = std::vector<GLuint>;
-  using ShadersMap = std::map<std::string, GLuint>;
+
+  namespace Resources {
+    struct ShaderProgramInfo;
+    using ShaderPrograms = std::map<std::string, Resources::ShaderProgramInfo>;
+  } // namespace Resources
 
 } // namespace ktp
 

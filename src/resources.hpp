@@ -18,16 +18,18 @@
 
 namespace ktp { namespace Resources {
 
-/* SHADERS */
+void loadResources();
 
-extern ShadersMap shaders;
+// SHADERS
 
-/**
- * @brief Retrieves a shader by name.
- * @param name The name of the shader you want.
- * @return A ShaderProgram with the shader requested.
- */
-inline auto getShader(const std::string& name) { return ShaderProgram{shaders.at(name)}; }
+struct ShaderProgramInfo {
+  GLuint id {};
+  std::string vertex {};
+  std::string fragment {};
+  std::string geometry {};
+};
+
+extern ShaderPrograms shader_programs;
 
 /**
  * @brief Loads and compiles a shader program.
@@ -36,10 +38,17 @@ inline auto getShader(const std::string& name) { return ShaderProgram{shaders.at
  * @param fragment_shader_path Fragment shader file path.
  * @param geometry_shader_path Geometry shader file path.
  */
-bool loadShader(const std::string& name, const std::string& vertex_shader_path, const std::string& fragment_shader_path, const std::string& geometry_shader_path = "");
+bool createShaderProgram(const std::string& name, const std::string& vertex_shader_path, const std::string& fragment_shader_path, const std::string& geometry_shader_path = "");
 
 /**
- * @brief Prints any problems with the shader program. If any...
+ * @brief Retrieves a shader by name.
+ * @param name The name of the shader you want.
+ * @return A ShaderProgram with the shader requested.
+ */
+inline auto getShaderProgram(const std::string& name) { return ShaderProgram{shader_programs.at(name).id}; }
+
+/**
+ * @brief Prints any problems with the shader program.
  * @param program The id of the shader program.
  */
 bool printProgramLog(GLuint program);

@@ -1,8 +1,10 @@
 #include "gui.hpp"
 
+#include "../resources.hpp"
 #include "../../lib/imgui/imgui.h"
 #include "../../lib/imgui/imgui_impl_glfw.h"
 #include "../../lib/imgui/imgui_impl_opengl3.h"
+#include "../../lib/imgui/imgui_stdlib.h"
 #include <iostream>
 
 void ktp::gui::clean() {
@@ -12,12 +14,10 @@ void ktp::gui::clean() {
 }
 
 void ktp::gui::init(GLFWwindow* window) {
-  // Setup Dear ImGui context
-  IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO(); (void)io;
-  //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-  //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Control
+  // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+  // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Control
 
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -25,66 +25,85 @@ void ktp::gui::init(GLFWwindow* window) {
   std::cout << "Dear ImGui " << ImGui::GetVersion() << '\n';
 }
 
-void ktp::gui::layout() {
-    // Start the Dear ImGui frame
+void ktp::gui::draw() {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
   ImGui::ShowDemoWindow();
 
-
-
-
-
+  mainWindow();
 
   ImGui::Render();
-
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
-//   ImGui::SetNextWindowSize(ImVec2(510, 528), ImGuiCond_FirstUseEver);
-//   if (!ImGui::Begin("KeTerrain configuration")) {
-//     ImGui::End();
-//     return;
-//   }
-//   // ImGui::Text("Texture settings");
-//   // ImGui::BeginDisabled(generating_texture);
-//   //   size();
-//   //   changeView();
-//   //   ImGui::SameLine();
-//   //   invertElevation();
-//   //   ImGui::SameLine();
-//   //   saveImage();
-//   //   ImGui::SameLine();
-//   //   defaults();
-//   // ImGui::EndDisabled();
-//   // if (size_changed) {
-//   //   ImGui::Text("Generate a new texture to apply size changes!");
-//   // }
-//   // ImGui::Separator();
-//   // ImGui::Text("Generation settings");
-//   // ImGui::BeginDisabled(generating_texture);
-//   //   tileable();
-//   //   seed();
-//   //   frequency();
-//   //   gain();
-//   //   lacunarity();
-//   //   octaves();
-//   //   ImGui::Separator();
-//   //   // generation button
-//   //   generateTexture();
-//   //   ImGui::SameLine();
-//   //   // randomize button
-//   //   randomize();
-//   //   ImGui::SameLine();
-//   // ImGui::EndDisabled();
-//   // ImGui::Separator();
-//   // if (saving_image) {
-//   //   ImGui::Text("Saving image...");
-//   //   return;
-//   // }
-//   // if (generating_texture) {
-//   //   ImGui::Text("Generating texture...");
-//   // }
-  // ImGui::End();
+void ktp::gui::mainWindow() {
+  ImGui::Begin("keteMine");
+  ImGui::Text("Average %.3f ms/frame (%.1f FPS)", 1000.f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  if (ImGui::CollapsingHeader("Resources", ImGuiTreeNodeFlags_None)) {
+    shaders();
+    textures();
+  }
+  ImGui::End();
+}
+
+void ktp::gui::shaders() {
+  if (ImGui::TreeNode("Shaders")) {
+    static int selected {0};
+    static std::string selected_name {Resources::shader_programs.cbegin()->first};
+
+    // left
+    ImGui::BeginChild("shaders list", ImVec2(150, 0), true);
+    int index {0};
+    for (auto key: Resources::shader_programs) {
+      if (ImGui::Selectable(('#' + std::to_string(key.second.id) + ' ' + key.first).c_str(), selected == index))  {
+        selected = index;
+        selected_name = key.first;
+      }
+      ++index;
+    }
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+
+    // right
+    ImGui::BeginGroup();
+    ImGui::BeginChild("shader view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
+    ImGui::Text("Shader program %s (id: %d)", selected_name.c_str(), Resources::shader_programs[selected_name].id);
+    ImGui::Separator();
+    if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
+      if (ImGui::BeginTabItem("Vertex shader")) {
+        ImGui::TextWrapped(Resources::shader_programs[selected_name].vertex.c_str());
+        ImGui::EndTabItem();
+      }
+      if (ImGui::BeginTabItem("Fragment shader")) {
+        ImGui::TextWrapped(Resources::shader_programs[selected_name].fragment.c_str());
+        ImGui::EndTabItem();
+      }
+      bool geometry_shader_missing {Resources::shader_programs[selected_name].geometry == ""};
+      ImGui::BeginDisabled(geometry_shader_missing);
+      if (ImGui::BeginTabItem("Geometry shader")) {
+        ImGui::TextWrapped(Resources::shader_programs[selected_name].geometry.c_str());
+        ImGui::EndTabItem();
+      }
+      ImGui::EndDisabled();
+      ImGui::EndTabBar();
+    }
+    ImGui::EndChild();
+    if (ImGui::Button("Revert")) {}
+    ImGui::SameLine();
+    if (ImGui::Button("Save file")) {}
+    ImGui::SameLine();
+    if (ImGui::Button("Compile")) {}
+    ImGui::EndGroup();
+
+    ImGui::TreePop();
+  }
+}
+
+void ktp::gui::textures() {
+  if (ImGui::TreeNode("Textures")) {
+    ImGui::TreePop();
+  }
 }

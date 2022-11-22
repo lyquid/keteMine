@@ -16,11 +16,24 @@ void logMessage(const std::string& msg) {
   std::cout << msg << "\n";
 }
 
-/* SHADERS */
+void ktp::Resources::loadResources() {
+  Resources::createShaderProgram(
+    "basic",
+    "resources/shaders/basic.vert",
+    "resources/shaders/basic.frag"
+  );
+  Resources::createShaderProgram(
+    "interpolation",
+    "resources/shaders/basic.vert",
+    "resources/shaders/interpolation.frag"
+  );
+}
 
-ktp::ShadersMap ktp::Resources::shaders {};
+// SHADERS
 
-bool ktp::Resources::loadShader(const std::string& name, const std::string& vertex_shader_path, const std::string& fragment_shader_path, const std::string& geometry_shader_path) {
+ktp::Resources::ShaderPrograms ktp::Resources::shader_programs {};
+
+bool ktp::Resources::createShaderProgram(const std::string& name, const std::string& vertex_shader_path, const std::string& fragment_shader_path, const std::string& geometry_shader_path) {
   // Create the shaders
 	GLuint vertex_shader_id {glCreateShader(GL_VERTEX_SHADER)};
 	GLuint fragment_shader_id {glCreateShader(GL_FRAGMENT_SHADER)};
@@ -143,8 +156,8 @@ bool ktp::Resources::loadShader(const std::string& name, const std::string& vert
     glDeleteShader(geometry_shader_id);
     glCheckError();
   }
-
-  shaders[name] = id;
+  // add shader to the maps
+  shader_programs[name] = {id, vertex_shader_code, fragment_shader_code, geometry_shader_code};
   logMessage("Shader program \"" + name + "\" successfully compiled and linked.");
   return true;
 }
@@ -165,7 +178,7 @@ bool ktp::Resources::printProgramLog(GLuint program) {
       return false;
     }
   } else {
-    logError("printProgramLog(): Name " + std::to_string(program) + " is not a program.");
+    logError("printProgramLog(): Name " + std::to_string(program) + " is not a shader program.");
     return false;
   }
   return true;
