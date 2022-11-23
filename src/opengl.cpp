@@ -17,7 +17,7 @@ GLenum ktp::glCheckError_(const char* file, int line) {
       case GL_OUT_OF_MEMORY:                 error_msg = "OUT_OF_MEMORY"; break;
       case GL_INVALID_FRAMEBUFFER_OPERATION: error_msg = "INVALID_FRAMEBUFFER_OPERATION"; break;
     }
-    error_msg = error_msg + " in file " + file + " (" + std::to_string(line) + ')';
+    error_msg = error_msg + " in file " + file + " (" + std::to_string(line) + ")\n";
     std::cerr << error_msg;
   }
   return error_code;

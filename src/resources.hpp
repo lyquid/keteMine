@@ -14,6 +14,7 @@
 
 #include "opengl.hpp"
 #include "types.hpp"
+#include <initializer_list>
 #include <string>
 
 namespace ktp { namespace Resources {
@@ -32,6 +33,14 @@ struct ShaderProgramInfo {
 extern ShaderPrograms shader_programs;
 
 /**
+ * @brief Compiles a shader.
+ * @param shader The id of the shader.
+ * @param source The source code for the shader.
+ * @return True if all went OK. False otherwise.
+ */
+bool compileShader(GLuint shader, const std::string& source);
+
+/**
  * @brief Loads and compiles a shader program.
  * @param name The name you wan to give to the shader program.
  * @param vertex_shader_path Vertex shader file path.
@@ -41,11 +50,24 @@ extern ShaderPrograms shader_programs;
 bool createShaderProgram(const std::string& name, const std::string& vertex_shader_path, const std::string& fragment_shader_path, const std::string& geometry_shader_path = "");
 
 /**
+ * @brief Calls glDeleteShader for every shader given.
+ * @param list The list of shaders to delete.
+ */
+void deleteShaders(const std::initializer_list<GLuint>& list);
+
+/**
  * @brief Retrieves a shader by name.
  * @param name The name of the shader you want.
  * @return A ShaderProgram with the shader requested.
  */
 inline auto getShaderProgram(const std::string& name) { return ShaderProgram{shader_programs.at(name).id}; }
+
+/**
+ * @brief Reads a file that hopefully contains a shaders's source code.
+ * @param path The path to the file.
+ * @return A string containing the source code or empty string if something goes wrong.
+ */
+std::string loadShaderSource(const std::string path);
 
 /**
  * @brief Prints any problems with the shader program.
