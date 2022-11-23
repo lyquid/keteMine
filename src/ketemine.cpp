@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+bool ktp::keteMine::show_gui {true};
 GLFWwindow* ktp::keteMine::window {nullptr};
 ktp::Size2D ktp::keteMine::window_size {1920, 1080};
 
@@ -23,6 +24,8 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GL_TRUE);
+  if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
+    ktp::keteMine::show_gui = !ktp::keteMine::show_gui;
 }
 
 void windowSizeCallback(GLFWwindow* window, int width, int height) {
@@ -151,7 +154,7 @@ void ktp::keteMine::run() {
     vao.bind();
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    gui::draw();
+    if (show_gui) gui::draw();
 
     glfwSwapBuffers(window);
   }

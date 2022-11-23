@@ -21,6 +21,7 @@ void init();
 void run();
 void versionInfo();
 
+extern bool show_gui;
 extern GLFWwindow* window;
 extern Size2D window_size;
 
