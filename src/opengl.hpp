@@ -238,6 +238,7 @@ class VBO {
   void setup(const T* vertices, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW) {
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, usage);
+    glCheckError();
   }
 
   /**
@@ -250,6 +251,7 @@ class VBO {
   void setup(const std::vector<T>& vertices, GLenum usage = GL_STATIC_DRAW) {
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(T), vertices.data(), usage);
+    glCheckError();
   }
 
   /**
@@ -265,6 +267,7 @@ class VBO {
   void setupSubData(const T* vertices, GLsizeiptr size, GLintptr offset = 0) {
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, vertices);
+    glCheckError();
   }
 
   /**
@@ -279,6 +282,7 @@ class VBO {
   void setupSubData(const std::vector<T>& vertices, GLintptr offset = 0) {
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferSubData(GL_ARRAY_BUFFER, offset, vertices.size() * sizeof(T), vertices.data());
+    glCheckError();
   }
 
   /**

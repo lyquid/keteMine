@@ -5,11 +5,11 @@
 #include <sstream>
 
 void logError(const std::string& msg) {
-  ktp::gui::log.add("[ERROR] %s\n", msg.c_str());
+  ktp::gui::log.addError("%s\n", msg.c_str());
 }
 
 void logError(const std::string& msg, const std::string& path) {
-  ktp::gui::log.add("[ERROR] %s file: \"%s\"\n", msg.c_str(), path.c_str());
+  ktp::gui::log.addError("%s file: \"%s\"\n", msg.c_str(), path.c_str());
 }
 
 void logMessage(const std::string& msg) {

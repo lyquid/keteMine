@@ -13,7 +13,7 @@ ktp::Size2D ktp::keteMine::window_size {1920, 1080};
 // CALLBACKS
 
 void glfwErrorCallback(int error, const char* description) {
-  ktp::gui::log.add("GLFW error %d: %s\n", error, description);
+  ktp::gui::log.addError("GLFW error %d: %s\n", error, description);
 }
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -108,7 +108,7 @@ void ktp::keteMine::init() {
   glewExperimental = GL_TRUE;
   const auto err {glewInit()};
   if (GLEW_OK != err) {
-    gui::log.add("GLEW error: %s\n", glewGetErrorString(err));
+    gui::log.addError("GLEW error: %s\n", glewGetErrorString(err));
     exit(EXIT_FAILURE);
   }
 

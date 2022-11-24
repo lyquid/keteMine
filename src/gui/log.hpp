@@ -20,13 +20,14 @@ class Log {
  public:
   Log() { clear(); }
   void add(const char* fmt, ...) IM_FMTARGS(2);
-  // void addError(const char* fmt, ...) IM_FMTARGS(2) {}
+  void addError(const char* fmt, ...) IM_FMTARGS(2);
+  void addWarning(const char* fmt, ...) IM_FMTARGS(2);
   void draw(const char* title);
  private:
   void clear();
   ImGuiTextBuffer m_buf {};
   ImGuiTextFilter m_filter {};
-  ImVector<int>   m_line_offsets {}; // Index to lines offset. We maintain this with AddLog() calls.
+  ImVector<int>   m_line_offsets {}; // Index to lines offset. We maintain this with add() calls.
   bool            m_auto_scroll {true};  // Keep scrolling if already at the bottom.
 };
 

@@ -1,10 +1,42 @@
 #include "log.hpp"
 
+#include <string>
+
 void ktp::gui::Log::add(const char* fmt, ...) {
   auto old_size {m_buf.size()};
   va_list args {};
   va_start(args, fmt);
   m_buf.appendfv(fmt, args);
+  va_end(args);
+
+  for (auto new_size = m_buf.size(); old_size < new_size; ++old_size) {
+    if (m_buf[old_size] == '\n')
+      m_line_offsets.push_back(old_size + 1);
+  }
+}
+
+void ktp::gui::Log::addError(const char* fmt, ...) {
+  auto old_size {m_buf.size()};
+  std::string final_text {fmt};
+  final_text = "[ERROR] " + final_text;
+  va_list args {};
+  va_start(args, fmt);
+  m_buf.appendfv(final_text.c_str(), args);
+  va_end(args);
+
+  for (auto new_size = m_buf.size(); old_size < new_size; ++old_size) {
+    if (m_buf[old_size] == '\n')
+      m_line_offsets.push_back(old_size + 1);
+  }
+}
+
+void ktp::gui::Log::addWarning(const char* fmt, ...) {
+  auto old_size {m_buf.size()};
+  std::string final_text {fmt};
+  final_text = "[WARNING] " + final_text;
+  va_list args {};
+  va_start(args, fmt);
+  m_buf.appendfv(final_text.c_str(), args);
   va_end(args);
 
   for (auto new_size = m_buf.size(); old_size < new_size; ++old_size) {

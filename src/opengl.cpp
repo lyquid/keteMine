@@ -18,7 +18,7 @@ GLenum ktp::glCheckError_(const char* file, int line) {
       case GL_INVALID_FRAMEBUFFER_OPERATION: error_msg = "INVALID_FRAMEBUFFER_OPERATION"; break;
     }
     error_msg = error_msg + " in file " + file + " (" + std::to_string(line) + ")\n";
-    gui::log.add(error_msg.c_str());
+    gui::log.addError(error_msg.c_str());
     // std::cerr << error_msg;
   }
   return error_code;
@@ -71,18 +71,21 @@ ktp::FloatArray ktp::cube(GLfloat size) {
 
 ktp::VBO::VBO() {
   glGenBuffers(1, &m_id);
+  glCheckError();
 }
 
 // this setup is needed when you pass nullptr for a later use with subData
 void ktp::VBO::setup(const GLfloat* vertices, GLsizeiptr size, GLenum usage) {
   glBindBuffer(GL_ARRAY_BUFFER, m_id);
   glBufferData(GL_ARRAY_BUFFER, size, vertices, usage);
+  glCheckError();
 }
 
 /* EBO */
 
 ktp::EBO::EBO() {
   glGenBuffers(1, &m_id);
+  glCheckError();
 }
 
 void ktp::EBO::generateEBO(FloatArray& vertices, UintArray& indices) {
@@ -122,17 +125,20 @@ void ktp::EBO::generateEBO(FloatArray& vertices, UintArray& indices) {
 void ktp::EBO::setup(const UintArray& indices, GLenum usage) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), usage);
+  glCheckError();
 }
 
 void ktp::EBO::setup(const GLuint* indices, GLsizeiptr size, GLenum usage) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage);
+  glCheckError();
 }
 
 /* VAO */
 
 ktp::VAO::VAO() {
   glGenVertexArrays(1, &m_id);
+  glCheckError();
 }
 
 void ktp::VAO::linkAttrib(const VBO& vbo, GLuint layout, GLuint components, GLenum type, GLsizeiptr stride, void* offset, GLboolean normalize) const {
@@ -147,6 +153,7 @@ void ktp::VAO::linkAttrib(const VBO& vbo, GLuint layout, GLuint components, GLen
     stride,       // stride: specifies the byte offset between consecutive generic vertex attributes
     offset        // pointer: specifies a offset of the first component of the first generic vertex attribute in the array in the data store
   );
+  glCheckError();
 }
 
 void ktp::VAO::linkAttribFast(GLuint layout, GLuint components, GLenum type, GLsizeiptr stride, void* offset, GLboolean normalize) const {
