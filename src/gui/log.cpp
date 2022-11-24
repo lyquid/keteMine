@@ -1,6 +1,6 @@
 #include "log.hpp"
 
-#include <string>
+#include <fstream>
 
 void ktp::gui::Log::add(const char* fmt, ...) {
   auto old_size {m_buf.size()};
@@ -68,12 +68,15 @@ void ktp::gui::Log::draw(const char* title) {
   ImGui::SameLine();
   const bool copy {ImGui::Button("Copy")};
   ImGui::SameLine();
+  const bool save_file {ImGui::Button("Save log.txt")};
+  ImGui::SameLine();
   m_filter.Draw("Filter", -100.0f);
 
   ImGui::Separator();
 
   if (ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar)) {
     if (clear) this->clear();
+    if (save_file) saveLogFile("log.txt");
     if (copy) ImGui::LogToClipboard();
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
@@ -126,4 +129,14 @@ void ktp::gui::Log::draw(const char* title) {
   }
   ImGui::EndChild();
   ImGui::End();
+}
+
+void ktp::gui::Log::saveLogFile(const std::string& file_name) {
+  std::ofstream file {file_name};
+  if (file.is_open()) {
+    file << m_buf.c_str();
+    file.close();
+  } else {
+    addError("Could not save %s file!\n", file_name.c_str());
+  }
 }

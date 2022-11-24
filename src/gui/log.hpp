@@ -13,6 +13,7 @@
 #define KETEMINE_SRC_GUI_LOG_HPP_
 
 #include "../../lib/imgui/imgui.h"
+#include <string>
 
 namespace ktp { namespace gui {
 
@@ -25,6 +26,7 @@ class Log {
   void draw(const char* title);
  private:
   void clear();
+  void saveLogFile(const std::string& file_name);
   ImGuiTextBuffer m_buf {};
   ImGuiTextFilter m_filter {};
   ImVector<int>   m_line_offsets {}; // Index to lines offset. We maintain this with add() calls.
