@@ -1,5 +1,6 @@
 add_library(keteMineGUI
   gui.cpp
+  log.cpp
 )
 
 if(DEFINED CMAKE_TOOLCHAIN_FILE)

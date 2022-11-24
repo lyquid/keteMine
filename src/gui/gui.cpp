@@ -5,12 +5,26 @@
 #include "../../lib/imgui/imgui_impl_glfw.h"
 #include "../../lib/imgui/imgui_impl_opengl3.h"
 #include "../../lib/imgui/imgui_stdlib.h"
-#include <iostream>
+
+ktp::gui::Log ktp::gui::log {};
 
 void ktp::gui::clean() {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
+}
+
+void ktp::gui::draw() {
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+
+  // ImGui::ShowDemoWindow();
+  mainWindow();
+  logWindow();
+
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void ktp::gui::init(GLFWwindow* window) {
@@ -22,20 +36,19 @@ void ktp::gui::init(GLFWwindow* window) {
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init("#version 430");
-  std::cout << "Dear ImGui " << ImGui::GetVersion() << '\n';
+  log.add("Dear ImGui %s\n", ImGui::GetVersion());
 }
 
-void ktp::gui::draw() {
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-
-  ImGui::ShowDemoWindow();
-
-  mainWindow();
-
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+void ktp::gui::logWindow() {
+  constexpr auto title {"Log"};
+  // For the demo: add a debug button _BEFORE_ the normal log window contents
+  // We take advantage of a rarely used feature: multiple calls to Begin()/End() are appending to the _same_ window.
+  // Most of the contents of the window will be added by the log.Draw() call.
+  ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+  ImGui::Begin(title);
+  ImGui::End();
+  // Actually call in the regular Log helper (which will Begin() into the same window as we just did)
+  log.draw(title);
 }
 
 void ktp::gui::mainWindow() {

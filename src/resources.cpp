@@ -1,19 +1,19 @@
 #include "resources.hpp"
 
+#include "gui/gui.hpp"
 #include <fstream>
-#include <iostream>
 #include <sstream>
 
 void logError(const std::string& msg) {
-  std::cerr << msg << "\n";
+  ktp::gui::log.add("[ERROR] %s\n", msg.c_str());
 }
 
 void logError(const std::string& msg, const std::string& path) {
-  std::cerr << msg << " file: \"" << path << "\"\n";
+  ktp::gui::log.add("[ERROR] %s file: \"%s\"\n", msg.c_str(), path.c_str());
 }
 
 void logMessage(const std::string& msg) {
-  std::cout << msg << "\n";
+  ktp::gui::log.add("%s\n", msg.c_str());
 }
 
 void ktp::Resources::loadResources() {

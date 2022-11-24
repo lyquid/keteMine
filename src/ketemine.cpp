@@ -5,7 +5,6 @@
 #include "gui/gui.hpp"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 
 bool ktp::keteMine::show_gui {true};
 GLFWwindow* ktp::keteMine::window {nullptr};
@@ -14,7 +13,7 @@ ktp::Size2D ktp::keteMine::window_size {1920, 1080};
 // CALLBACKS
 
 void glfwErrorCallback(int error, const char* description) {
-  std::cout << "GLFW error " << error << ": " << description << '\n';
+  ktp::gui::log.add("GLFW error %d: %s\n", error, description);
 }
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -62,21 +61,21 @@ void ktp::keteMine::contextInfo() {
     "GL_MAX_VIEWPORT_DIMS",
     "GL_STEREO",
   };
-  std::cout << "GL context params:\n";
+  gui::log.add("GL context params:\n");
   // integers - only works if the order is 0-10 integer return types
   for (int i = 0; i < 10; i++) {
-    int v = 0;
+    int v {0};
     glGetIntegerv(params[i], &v);
-    std::cout << "  " << names[i] << " " << v << "\n";
+    gui::log.add(" %s %d\n", names[i], v);
   }
   // others
   int v[2];
   v[0] = v[1] = 0;
   glGetIntegerv(params[10], v);
-  std::cout << "  " << names[10] << " " << v[0] << " " << v[1] << "\n";
-  unsigned char s = 0;
+  gui::log.add(" %s %d %d\n", names[10], v[0], v[1]);
+  unsigned char s {0};
   glGetBooleanv(params[11], &s);
-  std::cout << "  " << names[11] << " " << (unsigned int)s << "\n";
+  gui::log.add(" %s %u\n", names[11], (unsigned int)s);
 }
 
 void ktp::keteMine::init() {
@@ -88,6 +87,7 @@ void ktp::keteMine::init() {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_SAMPLES, 4);
+  glfwWindowHint(GLFW_MAXIMIZED, true);
   // window
   // GLFWmonitor* monitor {glfwGetPrimaryMonitor()};
   // const GLFWvidmode* video_mode {glfwGetVideoMode(monitor)};
@@ -108,7 +108,7 @@ void ktp::keteMine::init() {
   glewExperimental = GL_TRUE;
   const auto err {glewInit()};
   if (GLEW_OK != err) {
-    std::cerr << "GLEW error: " << glewGetErrorString(err) << '\n';
+    gui::log.add("GLEW error: %s\n", glewGetErrorString(err));
     exit(EXIT_FAILURE);
   }
 
@@ -164,8 +164,8 @@ void ktp::keteMine::run() {
 }
 
 void ktp::keteMine::versionInfo() {
-  std::cout << glGetString(GL_RENDERER) << '\n';
-  std::cout << "OpenGL " << glGetString(GL_VERSION) << '\n';
-  std::cout << "GLEW " << glewGetString(GLEW_VERSION) << '\n';
-  std::cout << "GLFW " << glfwGetVersionString() << '\n';
+  gui::log.add("%s\n", glGetString(GL_RENDERER));
+  gui::log.add("OpenGL %s\n", glGetString(GL_VERSION));
+  gui::log.add("GLEW %s\n", glewGetString(GLEW_VERSION));
+  gui::log.add("GLFW %s\n", glfwGetVersionString());
 }

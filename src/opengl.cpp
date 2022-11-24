@@ -1,7 +1,7 @@
 #include "opengl.hpp"
 
+#include "gui/gui.hpp"
 #include <glm/common.hpp>
-#include <iostream>
 #include <string>
 
 GLenum ktp::glCheckError_(const char* file, int line) {
@@ -18,7 +18,8 @@ GLenum ktp::glCheckError_(const char* file, int line) {
       case GL_INVALID_FRAMEBUFFER_OPERATION: error_msg = "INVALID_FRAMEBUFFER_OPERATION"; break;
     }
     error_msg = error_msg + " in file " + file + " (" + std::to_string(line) + ")\n";
-    std::cerr << error_msg;
+    gui::log.add(error_msg.c_str());
+    // std::cerr << error_msg;
   }
   return error_code;
 }

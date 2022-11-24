@@ -12,14 +12,18 @@
 #if !defined(KETEMINE_SRC_GUI_GUI_HPP_)
 #define KETEMINE_SRC_GUI_GUI_HPP_
 
+#include "log.hpp"
 #include "../types.hpp"
 
 namespace ktp { namespace gui {
+
+extern Log log;
 
 void clean();
 void draw();
 void init(GLFWwindow* window);
 
+void logWindow();
 void mainWindow();
 void shaders();
 void textures();
