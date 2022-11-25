@@ -1,4 +1,5 @@
 add_executable(keteMine
+  game_state.cpp
   ketemine.cpp
   main.cpp
   opengl.cpp

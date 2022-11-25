@@ -201,7 +201,7 @@ class VBO {
 
  public:
 
-  VBO();
+  VBO() = default;
   VBO(const VBO& other) = delete;
   VBO(VBO&& other) { *this = std::move(other); }
   ~VBO() { if (m_id) glDeleteBuffers(1, &m_id); }
@@ -218,6 +218,11 @@ class VBO {
    * @brief Binds the VBO.
    */
   void bind() const { glBindBuffer(GL_ARRAY_BUFFER, m_id); }
+
+  /**
+   * @brief Generates the buffer for the VBO.
+   */
+  void genBuffer();
 
   /**
    * @brief Sets up the data for the buffer.
@@ -302,7 +307,7 @@ class EBO {
 
  public:
 
-  EBO();
+  EBO() = default;
   EBO(const EBO& other) = delete;
   EBO(EBO&& other) { *this = std::move(other); }
   ~EBO() { if (m_id) glDeleteBuffers(1, &m_id); }
@@ -314,6 +319,12 @@ class EBO {
     }
     return *this;
   }
+
+  /**
+   * @brief Generates the buffer for the EBO.
+   *
+   */
+  void genBuffer();
 
   /**
    * @brief Generates an EBO by removing duplicate coordinates and creating an index array.
@@ -357,7 +368,7 @@ class VAO {
 
  public:
 
-  VAO();
+  VAO() = default;
   VAO(const VAO& other) = delete;
   VAO(VAO&& other) { *this = std::move(other); }
   ~VAO() { if (m_id) glDeleteVertexArrays(1, &m_id); }
@@ -398,6 +409,11 @@ class VAO {
    * @param normalize Specifies whether fixed-point data values should be normalized.
    */
   void linkAttribFast(GLuint layout, GLuint components, GLenum type, GLsizeiptr stride, void* offset, GLboolean normalize = GL_FALSE) const;
+
+  /**
+   * @brief Generates the vertex array buffer.
+   */
+  void genVertexArray();
 
   /**
    * @brief Unbinds the VAO.

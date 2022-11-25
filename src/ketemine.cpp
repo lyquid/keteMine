@@ -1,38 +1,44 @@
 #include "ketemine.hpp"
 
+#include "game_state.hpp"
 #include "opengl.hpp"
 #include "resources.hpp"
 #include "gui/gui.hpp"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-bool ktp::keteMine::show_gui {true};
-GLFWwindow* ktp::keteMine::window {nullptr};
-ktp::Size2D ktp::keteMine::window_size {1920, 1080};
+using namespace ktp;
+
+bool keteMine::show_gui {true};
+keteMine::GameState* keteMine::state {nullptr};
+GLFWwindow* keteMine::window {nullptr};
+Size2D keteMine::window_size {1920, 1080};
 
 // CALLBACKS
 
-void glfwErrorCallback(int error, const char* description) {
-  ktp::gui::log.addError("GLFW error %d: %s\n", error, description);
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+  keteMine::window_size = {width, height};
 }
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-  ktp::keteMine::window_size = {width, height};
+void glfwErrorCallback(int error, const char* description) {
+  gui::log.addError("GLFW error %d: %s\n", error, description);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GL_TRUE);
   if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
-    ktp::keteMine::show_gui = !ktp::keteMine::show_gui;
+    keteMine::show_gui = !keteMine::show_gui;
 }
 
 void windowSizeCallback(GLFWwindow* window, int width, int height) {
-  ktp::keteMine::window_size = {width, height};
+  keteMine::window_size = {width, height};
   // update any perspective matrices used here
 }
 
-void ktp::keteMine::contextInfo() {
+// main functions
+
+void keteMine::contextInfo() {
   GLenum params[] = {
     GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
     GL_MAX_CUBE_MAP_TEXTURE_SIZE,
@@ -78,7 +84,7 @@ void ktp::keteMine::contextInfo() {
   gui::log.add(" %s %u\n", names[11], (unsigned int)s);
 }
 
-void ktp::keteMine::init() {
+void keteMine::init() {
   // GLFW
   glfwSetErrorCallback(glfwErrorCallback);
   if (!glfwInit()) exit(EXIT_FAILURE);
@@ -119,51 +125,41 @@ void ktp::keteMine::init() {
   contextInfo();
 
   Resources::loadResources();
+
+  state = GameState::goToState(GameState::playing_state);
 }
 
-void ktp::keteMine::run() {
-  FloatArray points {
-     0.0f,  0.5f,  0.0f,
-     0.5f, -0.5f,  0.0f,
-    -0.5f, -0.5f,  0.0f
-  };
-  VBO vbo_points {};
-  vbo_points.setup(points, GL_STATIC_DRAW);
-
-  FloatArray colors {
-    1.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 1.0f
-  };
-  VBO vbo_colors {};
-  vbo_colors.setup(colors, GL_STATIC_DRAW);
-
-  VAO vao {};
-  vao.linkAttrib(vbo_points, 0, 3, GL_FLOAT, 0, nullptr);
-  vao.linkAttrib(vbo_colors, 1, 3, GL_FLOAT, 0, nullptr);
-
-  ShaderProgram shader {Resources::getShaderProgram("interpolation")};;
+void keteMine::run() {
+  constexpr double dt {1.0 / 60.0};
+  double current_time {glfwGetTime()};
+  double accumulator {0.0};
 
   while (!glfwWindowShouldClose(window)) {
+    // events
     glfwPollEvents();
+    state->handleInput(window);
+    // fixed time step logic
+    double new_time {glfwGetTime()};
+    double frame_time {new_time - current_time};
+    if (frame_time > 0.25) frame_time = 0.25;
 
-    glClear(GL_COLOR_BUFFER_BIT);
-    glViewport(0, 0, window_size.x, window_size.y);
-
-    shader.use();
-    vao.bind();
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
-    if (show_gui) gui::draw();
-
-    glfwSwapBuffers(window);
+    current_time = new_time;
+    accumulator += frame_time;
+    // update logic
+    while (accumulator >= dt) {
+      state->update(dt);
+      accumulator -= dt;
+    }
+    // render game
+    state->draw();
   }
   gui::clean();
   glfwDestroyWindow(window);
   glfwTerminate();
 }
 
-void ktp::keteMine::versionInfo() {
+void keteMine::versionInfo() {
+  gui::log.add("keteMine v0.1\n");
   gui::log.add("%s\n", glGetString(GL_RENDERER));
   gui::log.add("OpenGL %s\n", glGetString(GL_VERSION));
   gui::log.add("GLEW %s\n", glewGetString(GLEW_VERSION));

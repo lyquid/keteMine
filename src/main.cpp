@@ -7,5 +7,5 @@ int main(void) {
   keteMine::init();
   keteMine::run();
 
-  return 0;
+  return EXIT_SUCCESS;
 }

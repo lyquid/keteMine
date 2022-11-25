@@ -36,6 +36,11 @@ namespace ktp {
   using FloatArray = std::vector<GLfloat>;
   using UintArray  = std::vector<GLuint>;
 
+  namespace keteMine {
+    class GameState;
+    class PlayingState;
+  } // namespace keteMine
+
   namespace Resources {
     struct ShaderProgramInfo;
     using ShaderPrograms = std::map<std::string, Resources::ShaderProgramInfo>;

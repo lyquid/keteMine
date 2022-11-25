@@ -22,6 +22,7 @@ void run();
 void versionInfo();
 
 extern bool show_gui;
+extern GameState* state;
 extern GLFWwindow* window;
 extern Size2D window_size;
 

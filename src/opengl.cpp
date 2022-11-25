@@ -69,7 +69,7 @@ ktp::FloatArray ktp::cube(GLfloat size) {
 
 /* VBO */
 
-ktp::VBO::VBO() {
+void ktp::VBO::genBuffer() {
   glGenBuffers(1, &m_id);
   glCheckError();
 }
@@ -83,7 +83,7 @@ void ktp::VBO::setup(const GLfloat* vertices, GLsizeiptr size, GLenum usage) {
 
 /* EBO */
 
-ktp::EBO::EBO() {
+void ktp::EBO::genBuffer() {
   glGenBuffers(1, &m_id);
   glCheckError();
 }
@@ -136,11 +136,6 @@ void ktp::EBO::setup(const GLuint* indices, GLsizeiptr size, GLenum usage) {
 
 /* VAO */
 
-ktp::VAO::VAO() {
-  glGenVertexArrays(1, &m_id);
-  glCheckError();
-}
-
 void ktp::VAO::linkAttrib(const VBO& vbo, GLuint layout, GLuint components, GLenum type, GLsizeiptr stride, void* offset, GLboolean normalize) const {
   glBindVertexArray(m_id);
   vbo.bind();
@@ -166,4 +161,9 @@ void ktp::VAO::linkAttribFast(GLuint layout, GLuint components, GLenum type, GLs
     stride,       // stride: specifies the byte offset between consecutive generic vertex attributes
     offset        // pointer: specifies a offset of the first component of the first generic vertex attribute in the array in the data store
   );
+}
+
+void ktp::VAO::genVertexArray() {
+  glGenVertexArrays(1, &m_id);
+  glCheckError();
 }
