@@ -69,11 +69,11 @@ void keteMine::init() {
     exit(EXIT_FAILURE);
   }
 
-  versionInfo();
+  logVersionInfo();
 
   gui::init(window);
 
-  contextInfo();
+  logContextInfo();
 
   Resources::loadResources();
 
@@ -111,7 +111,7 @@ void keteMine::run() {
 
 // logging functions
 
-void keteMine::contextInfo() {
+void keteMine::logContextInfo() {
   GLenum params[] = {
     GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
     GL_MAX_CUBE_MAP_TEXTURE_SIZE,
@@ -157,7 +157,7 @@ void keteMine::contextInfo() {
   gui::log.add(" %s %u\n", names[11], (unsigned int)s);
 }
 
-void keteMine::versionInfo() {
+void keteMine::logVersionInfo() {
   gui::log.add("keteMine v0.1\n");
   gui::log.add("%s\n", glGetString(GL_RENDERER));
   gui::log.add("OpenGL %s\n", glGetString(GL_VERSION));

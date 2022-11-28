@@ -15,13 +15,13 @@
 #include "types.hpp"
 
 namespace ktp { namespace keteMine {
-  
+
 // main functions
 void init();
 void run();
 // logging functions
-void contextInfo();
-void versionInfo();
+void logContextInfo();
+void logVersionInfo();
 // mouse functions
 void captureMouse();
 void releaseMouse();
