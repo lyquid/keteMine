@@ -15,11 +15,16 @@
 #include "types.hpp"
 
 namespace ktp { namespace keteMine {
-
-void contextInfo();
+  
+// main functions
 void init();
 void run();
+// logging functions
+void contextInfo();
 void versionInfo();
+// mouse functions
+void captureMouse();
+void releaseMouse();
 
 extern bool show_gui;
 extern GameState* state;

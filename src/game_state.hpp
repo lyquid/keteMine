@@ -28,7 +28,7 @@ class GameState {
   virtual void handleInput(GLFWwindow* window) = 0;
   virtual void update(double delta_time) = 0;
 
-  static PlayingState playing_state;
+  static PlayingState s_playing_state;
 
  protected:
   virtual GameState* enter() { return this; }
@@ -43,6 +43,7 @@ class PlayingState: public GameState {
 
  private:
   static void keyCallback(GLFWwindow* window, int key, int scan_code, int action, int mode);
+  static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
   static void mouseCallback(GLFWwindow* window, double x_pos, double y_pos);
   static void scrollCallback(GLFWwindow* window, double x_offset, double y_offset);
   void updateCamera(double delta_time);
@@ -59,6 +60,8 @@ class PlayingState: public GameState {
   ShaderProgram m_shader_program {};
 
   Camera m_camera {glm::vec3(0.f, 0.f, 3.f), glm::vec3(0.f, 1.f, 0.f), -90.f, 0.f};
+
+  static bool s_mouse_captured;
 };
 
 } } // namespace State / ktp

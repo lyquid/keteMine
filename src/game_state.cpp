@@ -6,21 +6,35 @@
 #include "gui/gui.hpp"
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
+#include "../lib/imgui/imgui_impl_glfw.h"
 
 using namespace ktp;
 
 // PLAYINGSTATE STATICS
 
-keteMine::PlayingState keteMine::GameState::playing_state {};
+keteMine::PlayingState keteMine::GameState::s_playing_state {};
+bool keteMine::PlayingState::s_mouse_captured {false};
 
 void keteMine::PlayingState::keyCallback(GLFWwindow* window, int key, int scan_code, int action, int mode) {
+  ImGui_ImplGlfw_KeyCallback(window, key, scan_code, action, mode);
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GL_TRUE);
   if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
-    keteMine::show_gui = !keteMine::show_gui;
+    show_gui = !show_gui;
+}
+
+void keteMine::PlayingState::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+  ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
+  if (ImGui::GetIO().WantCaptureMouse) return;
+  if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+    s_mouse_captured ? releaseMouse() : captureMouse();
+    s_mouse_captured = !s_mouse_captured;
+  }
 }
 
 void keteMine::PlayingState::mouseCallback(GLFWwindow* window, double x_pos, double y_pos) {
+  ImGui_ImplGlfw_CursorPosCallback(window, x_pos, y_pos);
+  if (ImGui::GetIO().WantCaptureMouse || !s_mouse_captured) return;
   const float x {static_cast<float>(x_pos)}, y {static_cast<float>(y_pos)};
   static float last_x, last_y;
   static bool first_mouse {true};
@@ -35,26 +49,28 @@ void keteMine::PlayingState::mouseCallback(GLFWwindow* window, double x_pos, dou
   last_x = x;
   last_y = y;
 
-  keteMine::GameState::playing_state.camera().look(x_offset, y_offset);
+  GameState::s_playing_state.camera().look(x_offset, y_offset);
 }
 
 void keteMine::PlayingState::scrollCallback(GLFWwindow* window, double x_offset, double y_offset) {
-  keteMine::GameState::playing_state.camera().zoom(static_cast<float>(y_offset));
+  ImGui_ImplGlfw_ScrollCallback(window, x_offset, y_offset);
+  if (ImGui::GetIO().WantCaptureMouse || !s_mouse_captured) return;
+  GameState::s_playing_state.camera().zoom(static_cast<float>(y_offset));
 }
 
 // PLAYINGSTATE MEMBER FUNCTIONS
 
 void keteMine::PlayingState::draw() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glViewport(0, 0, keteMine::window_size.x, keteMine::window_size.y);
+  glViewport(0, 0, window_size.x, window_size.y);
 
   m_shader_program.use();
   m_vao.bind();
   glDrawArraysInstanced(GL_TRIANGLES, 0, m_vertices_data.size(), kNumCubes);
 
-  if (keteMine::show_gui) gui::draw();
+  if (show_gui) gui::draw();
 
-  glfwSwapBuffers(keteMine::window);
+  glfwSwapBuffers(window);
 }
 
 keteMine::GameState* keteMine::PlayingState::enter() {
@@ -92,14 +108,12 @@ keteMine::GameState* keteMine::PlayingState::enter() {
   m_translations.genBuffer();
   m_translations.setup(translations.data(), kNumCubes * sizeof(Point3D));
   m_vao.linkAttrib(m_translations, 2, 3, GL_FLOAT, 0, nullptr);
-
   glVertexAttribDivisor(2, 1);
-
+  // callbacks
   glfwSetKeyCallback(window, PlayingState::keyCallback);
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   glfwSetCursorPosCallback(window, PlayingState::mouseCallback);
+  glfwSetMouseButtonCallback(window, PlayingState::mouseButtonCallback);
   glfwSetScrollCallback(window, PlayingState::scrollCallback);
-
   return this;
 }
 
@@ -111,7 +125,7 @@ void keteMine::PlayingState::update(double delta_time) {
 }
 
 void keteMine::PlayingState::updateCamera(double delta_time) {
-  if (ImGui::GetIO().WantCaptureKeyboard) return;
+  if (ImGui::GetIO().WantCaptureKeyboard || !s_mouse_captured) return;
 
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     m_camera.move(CameraMovement::Forward, static_cast<float>(delta_time));

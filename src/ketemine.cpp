@@ -32,6 +32,85 @@ void windowSizeCallback(GLFWwindow* window, int width, int height) {
 
 // main functions
 
+void keteMine::init() {
+  // GLFW
+  glfwSetErrorCallback(glfwErrorCallback);
+  if (!glfwInit()) exit(EXIT_FAILURE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
+  glfwWindowHint(GLFW_MAXIMIZED, true);
+  // window
+  GLFWmonitor* monitor {glfwGetPrimaryMonitor()};
+  const GLFWvidmode* video_mode {glfwGetVideoMode(monitor)};
+  window_size.x = video_mode->width;
+  window_size.y = video_mode->height;
+  // window = glfwCreateWindow(video_mode->width, video_mode->height, "keteMine", monitor, nullptr);
+  window = glfwCreateWindow(window_size.x, window_size.y, "keteMine", nullptr, nullptr);
+  if (!window) {
+    glfwTerminate();
+    exit(EXIT_FAILURE);
+  }
+  glfwMakeContextCurrent(window);
+  glClearColor(0.f, 0.f, 0.f, 1.f);
+  glViewport(0, 0, window_size.x, window_size.y);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  // callbacks
+  glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+  glfwSetWindowSizeCallback(window, windowSizeCallback);
+  // GLEW
+  glewExperimental = GL_TRUE;
+  const auto err {glewInit()};
+  if (GLEW_OK != err) {
+    gui::log.addError("GLEW error: %s\n", glewGetErrorString(err));
+    exit(EXIT_FAILURE);
+  }
+
+  versionInfo();
+
+  gui::init(window);
+
+  contextInfo();
+
+  Resources::loadResources();
+
+  state = GameState::goToState(GameState::s_playing_state);
+}
+
+void keteMine::run() {
+  constexpr double dt {1.0 / 60.0};
+  double current_time {glfwGetTime()};
+  double accumulator {0.0};
+
+  while (!glfwWindowShouldClose(window)) {
+    // events
+    glfwPollEvents();
+    state->handleInput(window);
+    // fixed time step logic
+    double new_time {glfwGetTime()};
+    double frame_time {new_time - current_time};
+    if (frame_time > 0.25) frame_time = 0.25;
+
+    current_time = new_time;
+    accumulator += frame_time;
+    // update logic
+    while (accumulator >= dt) {
+      state->update(dt);
+      accumulator -= dt;
+    }
+    // render game
+    state->draw();
+  }
+  gui::clean();
+  glfwDestroyWindow(window);
+  glfwTerminate();
+}
+
+// logging functions
+
 void keteMine::contextInfo() {
   GLenum params[] = {
     GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
@@ -78,87 +157,20 @@ void keteMine::contextInfo() {
   gui::log.add(" %s %u\n", names[11], (unsigned int)s);
 }
 
-void keteMine::init() {
-  // GLFW
-  glfwSetErrorCallback(glfwErrorCallback);
-  if (!glfwInit()) exit(EXIT_FAILURE);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_SAMPLES, 4);
-  glfwWindowHint(GLFW_MAXIMIZED, true);
-  // window
-  GLFWmonitor* monitor {glfwGetPrimaryMonitor()};
-  const GLFWvidmode* video_mode {glfwGetVideoMode(monitor)};
-  window_size.x = video_mode->width;
-  window_size.y = video_mode->height;
-  // window = glfwCreateWindow(video_mode->width, video_mode->height, "keteMine", monitor, nullptr);
-  window = glfwCreateWindow(window_size.x, window_size.y, "keteMine", nullptr, nullptr);
-  if (!window) {
-    glfwTerminate();
-    exit(EXIT_FAILURE);
-  }
-  glfwMakeContextCurrent(window);
-  glClearColor(0.f, 0.f, 0.f, 1.f);
-  glViewport(0, 0, window_size.x, window_size.y);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  // callbacks
-  glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-  glfwSetWindowSizeCallback(window, windowSizeCallback);
-  // GLEW
-  glewExperimental = GL_TRUE;
-  const auto err {glewInit()};
-  if (GLEW_OK != err) {
-    gui::log.addError("GLEW error: %s\n", glewGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
-
-  versionInfo();
-
-  gui::init(window);
-
-  contextInfo();
-
-  Resources::loadResources();
-
-  state = GameState::goToState(GameState::playing_state);
-}
-
-void keteMine::run() {
-  constexpr double dt {1.0 / 60.0};
-  double current_time {glfwGetTime()};
-  double accumulator {0.0};
-
-  while (!glfwWindowShouldClose(window)) {
-    // events
-    glfwPollEvents();
-    state->handleInput(window);
-    // fixed time step logic
-    double new_time {glfwGetTime()};
-    double frame_time {new_time - current_time};
-    if (frame_time > 0.25) frame_time = 0.25;
-
-    current_time = new_time;
-    accumulator += frame_time;
-    // update logic
-    while (accumulator >= dt) {
-      state->update(dt);
-      accumulator -= dt;
-    }
-    // render game
-    state->draw();
-  }
-  gui::clean();
-  glfwDestroyWindow(window);
-  glfwTerminate();
-}
-
 void keteMine::versionInfo() {
   gui::log.add("keteMine v0.1\n");
   gui::log.add("%s\n", glGetString(GL_RENDERER));
   gui::log.add("OpenGL %s\n", glGetString(GL_VERSION));
   gui::log.add("GLEW %s\n", glewGetString(GLEW_VERSION));
   gui::log.add("GLFW %s\n", glfwGetVersionString());
+}
+
+// mouse functions
+
+void keteMine::captureMouse() {
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void keteMine::releaseMouse() {
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
