@@ -27,6 +27,11 @@ void ktp::Resources::loadResources() {
     "resources/shaders/basic.vert",
     "resources/shaders/interpolation.frag"
   );
+  Resources::createShaderProgram(
+    "test",
+    "resources/shaders/test.vert",
+    "resources/shaders/test.frag"
+  );
 }
 
 // SHADERS

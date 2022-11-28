@@ -12,6 +12,7 @@
 #if !defined(KETEMINE_SRC_GAME_STATE_HPP_)
 #define KETEMINE_SRC_GAME_STATE_HPP_
 
+#include "camera.hpp"
 #include "opengl.hpp"
 #include "types.hpp"
 
@@ -34,15 +35,26 @@ class GameState {
 
 class PlayingState: public GameState {
  public:
+  auto& camera() { return m_camera; }
   void draw() override;
   void handleInput(GLFWwindow* window) override;
   void update(double delta_time) override;
+
  private:
+  void updateCamera(double delta_time);
+  void updateMVP();
   GameState* enter() override;
-  VBO m_points {};
-  VBO m_colors {};
+
+  static constexpr int kNumCubes {1000};
+
   VAO m_vao {};
-  ShaderProgram m_shader {};
+  VBO m_vertices {};
+  VBO m_colors {};
+  VBO m_translations {};
+  FloatArray m_vertices_data {};
+  ShaderProgram m_shader_program {};
+
+  Camera m_camera {glm::vec3(0.f, 0.f, 3.f), glm::vec3(0.f, 1.f, 0.f), -90.f, 0.f};
 };
 
 } } // namespace State / ktp

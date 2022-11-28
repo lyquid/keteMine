@@ -14,6 +14,7 @@
 
 #include <GL/glew.h>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <map>
 #include <string>
 #include <vector>
@@ -23,6 +24,7 @@ struct GLFWwindow;
 
 namespace ktp {
 
+  class Camera;
   class EBO;
   class ShaderProgram;
   class Texture2D;

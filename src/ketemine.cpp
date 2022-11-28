@@ -17,7 +17,8 @@ Size2D keteMine::window_size {1920, 1080};
 // CALLBACKS
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-  keteMine::window_size = {width, height};
+  // keteMine::window_size = {width, height};
+  glViewport(0, 0, width, height);
 }
 
 void glfwErrorCallback(int error, const char* description) {
@@ -95,8 +96,10 @@ void keteMine::init() {
   glfwWindowHint(GLFW_SAMPLES, 4);
   glfwWindowHint(GLFW_MAXIMIZED, true);
   // window
-  // GLFWmonitor* monitor {glfwGetPrimaryMonitor()};
-  // const GLFWvidmode* video_mode {glfwGetVideoMode(monitor)};
+  GLFWmonitor* monitor {glfwGetPrimaryMonitor()};
+  const GLFWvidmode* video_mode {glfwGetVideoMode(monitor)};
+  window_size.x = video_mode->width;
+  window_size.y = video_mode->height;
   // window = glfwCreateWindow(video_mode->width, video_mode->height, "keteMine", monitor, nullptr);
   window = glfwCreateWindow(window_size.x, window_size.y, "keteMine", nullptr, nullptr);
   if (!window) {
@@ -106,6 +109,8 @@ void keteMine::init() {
   glfwMakeContextCurrent(window);
   glClearColor(0.f, 0.f, 0.f, 1.f);
   glViewport(0, 0, window_size.x, window_size.y);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
   // callbacks
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
   glfwSetKeyCallback(window, keyCallback);

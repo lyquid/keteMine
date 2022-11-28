@@ -1,8 +1,10 @@
 add_executable(keteMine
+  camera.cpp
   game_state.cpp
   ketemine.cpp
   main.cpp
   opengl.cpp
+  random.cpp
   resources.cpp
 )
 target_compile_features(keteMine PUBLIC cxx_std_20)
