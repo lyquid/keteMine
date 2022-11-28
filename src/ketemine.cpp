@@ -25,13 +25,6 @@ void glfwErrorCallback(int error, const char* description) {
   gui::log.addError("GLFW error %d: %s\n", error, description);
 }
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, GL_TRUE);
-  if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
-    keteMine::show_gui = !keteMine::show_gui;
-}
-
 void windowSizeCallback(GLFWwindow* window, int width, int height) {
   keteMine::window_size = {width, height};
   // update any perspective matrices used here
@@ -113,7 +106,6 @@ void keteMine::init() {
   glEnable(GL_CULL_FACE);
   // callbacks
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-  glfwSetKeyCallback(window, keyCallback);
   glfwSetWindowSizeCallback(window, windowSizeCallback);
   // GLEW
   glewExperimental = GL_TRUE;

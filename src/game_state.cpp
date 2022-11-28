@@ -9,10 +9,19 @@
 
 using namespace ktp;
 
-// PLAYINGSTATE
+// PLAYINGSTATE STATICS
 
-void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
-  const float x {static_cast<float>(xpos)}, y {static_cast<float>(ypos)};
+keteMine::PlayingState keteMine::GameState::playing_state {};
+
+void keteMine::PlayingState::keyCallback(GLFWwindow* window, int key, int scan_code, int action, int mode) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    glfwSetWindowShouldClose(window, GL_TRUE);
+  if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
+    keteMine::show_gui = !keteMine::show_gui;
+}
+
+void keteMine::PlayingState::mouseCallback(GLFWwindow* window, double x_pos, double y_pos) {
+  const float x {static_cast<float>(x_pos)}, y {static_cast<float>(y_pos)};
   static float last_x, last_y;
   static bool first_mouse {true};
   if (first_mouse) {
@@ -29,11 +38,11 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
   keteMine::GameState::playing_state.camera().look(x_offset, y_offset);
 }
 
-void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-  keteMine::GameState::playing_state.camera().zoom(static_cast<float>(yoffset));
+void keteMine::PlayingState::scrollCallback(GLFWwindow* window, double x_offset, double y_offset) {
+  keteMine::GameState::playing_state.camera().zoom(static_cast<float>(y_offset));
 }
 
-keteMine::PlayingState keteMine::GameState::playing_state {};
+// PLAYINGSTATE MEMBER FUNCTIONS
 
 void keteMine::PlayingState::draw() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -86,9 +95,10 @@ keteMine::GameState* keteMine::PlayingState::enter() {
 
   glVertexAttribDivisor(2, 1);
 
+  glfwSetKeyCallback(window, PlayingState::keyCallback);
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-  glfwSetCursorPosCallback(window, mouseCallback);
-  glfwSetScrollCallback(window, scrollCallback);
+  glfwSetCursorPosCallback(window, PlayingState::mouseCallback);
+  glfwSetScrollCallback(window, PlayingState::scrollCallback);
 
   return this;
 }

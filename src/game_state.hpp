@@ -21,11 +21,12 @@ namespace ktp { namespace keteMine {
 class GameState {
  public:
   virtual ~GameState() {}
+
+  static GameState* goToState(GameState& new_state) { return new_state.enter(); }
+
   virtual void draw() = 0;
   virtual void handleInput(GLFWwindow* window) = 0;
   virtual void update(double delta_time) = 0;
-
-  static GameState* goToState(GameState& new_state) { return new_state.enter(); }
 
   static PlayingState playing_state;
 
@@ -41,6 +42,9 @@ class PlayingState: public GameState {
   void update(double delta_time) override;
 
  private:
+  static void keyCallback(GLFWwindow* window, int key, int scan_code, int action, int mode);
+  static void mouseCallback(GLFWwindow* window, double x_pos, double y_pos);
+  static void scrollCallback(GLFWwindow* window, double x_offset, double y_offset);
   void updateCamera(double delta_time);
   void updateMVP();
   GameState* enter() override;
